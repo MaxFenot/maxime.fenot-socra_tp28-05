@@ -9,13 +9,13 @@ import java.security.InvalidParameterException;
  */
 public final class App {
     private IOAdapter adapter;
+    private MorseDecoder decoder;
 
-    private App() {
-        this(new ConsoleAdapter());
-    }
+    private App() { this(new ConsoleAdapter(), new MorseDecoder()); }
 
-    public App(IOAdapter adapter) {
+    public App(IOAdapter adapter, MorseDecoder decoder) {
         this.adapter = adapter;
+        this.decoder = decoder;
     }
 
     /**
@@ -29,19 +29,13 @@ public final class App {
     }
 
     public void run(){
-        /*adapter.write("Hello, what's your name ?");
-        String name = adapter.read();
-        adapter.write("Nice to meet you, " + name + " !");*/
-
-        //while (true) {
-            adapter.write("Enters input: ");
-            String input = adapter.read();
-            MorseDecoder decoder = new MorseDecoder();
-            try {
-                adapter.write(decoder.IntToMorse(input));
-            } catch (InvalidParameterException e) {
-                adapter.write("Invalid input !");
-            }
-       // }
+        adapter.write("Enters input: ");
+        String input = adapter.read();
+        try {
+            String res = decoder.MorseToInt(input);
+            adapter.write(res);
+        } catch (InvalidParameterException e) {
+            adapter.write("Invalid input !");
+        }
     }
 }

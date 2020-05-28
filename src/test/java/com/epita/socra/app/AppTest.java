@@ -1,5 +1,6 @@
 package com.epita.socra.app;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,6 +12,8 @@ import static org.mockito.Mockito.when;
 
 import com.epita.socra.app.tools.IOAdapter;
 
+import java.security.InvalidParameterException;
+
 /**
  * Unit test for simple App.
  */
@@ -18,52 +21,68 @@ public class AppTest {
     /**
      * Rigorous Test.
      */
+
     @Test
-    public void givenAMock_WhenRunningMain_ThenCheckOuputs_42() {
-        IOAdapter mock = mock(IOAdapter.class);
-/*        when(mock.read()).thenReturn("TEST");
-        App app = new App(mock);
-        app.run();
+    public void IntToMorse_999() {
+        MorseDecoder decoder = new MorseDecoder();
+        String res = decoder.IntToMorse("999");
+        assertEquals(res, "____.____.____.");
+    }
 
-        verify(mock).write("Hello, what's your name ?");
-        verify(mock).write(argThat(message -> message.contains("TEST")));
-*/
-
-        when(mock.read()).thenReturn("42");
-        App app = new App(mock);
-        app.run();
-        verify(mock).write("Enters input: ");
-        verify(mock).write(argThat(message -> message.contains("...-..---")));
+   @Test
+    public void IntToMorse_InvalidInput_abc() {
+       MorseDecoder decoder = new MorseDecoder();
+       boolean thrown = false;
+       try{
+           decoder.IntToMorse("abc");
+       } catch (InvalidParameterException e) {thrown = true;}
+       assertTrue(thrown);
     }
 
     @Test
-    public void givenAMock_WhenRunningMain_ThenCheckOuputs_999() {
-        IOAdapter mock = mock(IOAdapter.class);
-
-        when(mock.read()).thenReturn("999");
-        App app = new App(mock);
-        app.run();
-        verify(mock).write("Enters input: ");
-        verify(mock).write(argThat(message -> message.contains("----.----.----.")));
+    public void IntToMorse_InvalidInput_neg1() {
+        MorseDecoder decoder = new MorseDecoder();
+        boolean thrown = false;
+        try{
+            decoder.IntToMorse("-1");
+        } catch (InvalidParameterException e) {thrown = true;}
+        assertTrue(thrown);
     }
 
     @Test
-    public void givenAMock_WhenRunningMain_ThenCheckOuputs_InvalidInput_abc() {
-        IOAdapter mock = mock(IOAdapter.class);
-        when(mock.read()).thenReturn("abc");
-        App app = new App(mock);
-        app.run();
-        verify(mock).write("Enters input: ");
-        verify(mock).write(argThat(message -> message.contains("Invalid input !")));
+    public void MorseToInt_999() {
+        MorseDecoder decoder = new MorseDecoder();
+        String res = decoder.MorseToInt("____.____.____.");
+        assertEquals(res, "999");
     }
 
     @Test
-    public void givenAMock_WhenRunningMain_ThenCheckOuputs_InvalidInput_neg1() {
-        IOAdapter mock = mock(IOAdapter.class);
-        when(mock.read()).thenReturn("-1");
-        App app = new App(mock);
-        app.run();
-        verify(mock).write("Enters input: ");
-        verify(mock).write(argThat(message -> message.contains("Invalid input !")));
+    public void MorseToInt_InvalidInput_abc() {
+        MorseDecoder decoder = new MorseDecoder();
+        boolean thrown = false;
+        try{
+            decoder.MorseToInt("abc");
+        } catch (InvalidParameterException e) {thrown = true;}
+        assertTrue(thrown);
+    }
+
+    @Test
+    public void MorseToInt_InvalidInput_Too_long() {
+        MorseDecoder decoder = new MorseDecoder();
+        boolean thrown = false;
+        try{
+            decoder.MorseToInt("........");
+        } catch (InvalidParameterException e) {thrown = true;}
+        assertTrue(thrown);
+    }
+
+    @Test
+    public void MorseToInt_InvalidInput_Exotic() {
+        MorseDecoder decoder = new MorseDecoder();
+        boolean thrown = false;
+        try{
+            decoder.MorseToInt("._._.");
+        } catch (InvalidParameterException e) {thrown = true;}
+        assertTrue(thrown);
     }
 }
